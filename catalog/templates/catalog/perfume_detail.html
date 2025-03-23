@@ -1,0 +1,224 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}{{ perfume.name }} - Sultanbi Perfumes{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/perfume-detail.css' %}">
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/cart.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <div class="breadcrumbs">
+        <a href="{% url 'catalog' %}">Каталог</a>
+        {% if perfume.category %}
+        <span>›</span>
+        {% endif %}
+        <span>{{ perfume.name }}</span>
+    </div>
+
+    <div class="product-detail">
+        <div class="product-gallery">
+            <div class="main-image">
+                {% if perfume.image %}
+                <img src="{{ perfume.image.url }}" alt="{{ perfume.name }}" id="main-product-image">
+                {% else %}
+                <img src="{% static 'images/no-image.png' %}" alt="Нет изображения" id="main-product-image">
+                {% endif %}
+            </div>
+            {% if additional_images %}
+            <div class="thumbnail-gallery">
+                <div class="thumbnail active" onclick="changeMainImage(this, '{{ perfume.image.url }}')">
+                    <img src="{{ perfume.image.url }}" alt="{{ perfume.name }} - основное изображение">
+                </div>
+                {% for image in additional_images %}
+                <div class="thumbnail" onclick="changeMainImage(this, '{{ image.image.url }}')">
+                    <img src="{{ image.image.url }}" alt="{{ perfume.name }} - изображение {{ forloop.counter }}">
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="product-info-detail">
+            <h1 class="product-title">{{ perfume.name }}</h1>
+            
+            <div class="product-meta">
+                {% if perfume.brand %}
+                <div class="meta-item">
+                    <span class="meta-label">Бренд:</span>
+                    <span class="meta-value">{{ perfume.brand }}</span>
+                </div>
+                {% endif %}
+                
+                {% if perfume.category %}
+                <div class="meta-item">
+                    <span class="meta-label">Категория:</span>
+                    <span class="meta-value">{{ perfume.category.name }}</span>
+                </div>
+                {% endif %}
+                
+                {% if perfume.gender %}
+                <div class="meta-item">
+                    <span class="meta-label">Для кого:</span>
+                    <span class="meta-value">{{ perfume.gender.name }}</span>
+                </div>
+                {% endif %}
+                
+                {% if perfume.article %}
+                <div class="meta-item">
+                    <span class="meta-label">Артикул:</span>
+                    <span class="meta-value">{{ perfume.article }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="product-description">
+                {{ perfume.description|linebreaks }}
+            </div>
+            
+            <div class="product-purchase">
+                <div class="volume-selection">
+                    <h3>Выберите объем:</h3>
+                    <div class="volume-options">
+                        {% for volume in perfume.volumes.all %}
+                        {% if volume.in_stock %}
+                        <div class="volume-option {% if forloop.first %}active{% endif %}" 
+                             data-volume="{{ volume.volume.size }}"
+                             data-price="{{ volume.price }}">
+                            <span class="volume-size">{{ volume.volume.size }} мл</span>
+                            <span class="volume-price">{{ volume.price }} тг.</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="product-price-container">
+                    <div class="product-price" id="detail-price">
+                        <span class="price-value">
+                            {% with first_volume=perfume.volumes.first %}
+                            {% if first_volume %}
+                            {{ first_volume.price }}
+                            {% endif %}
+                            {% endwith %}
+                        </span> тг.
+                    </div>
+                    
+                    <button class="add-to-cart-button" id="add-to-cart-detail" 
+                            data-id="{{ perfume.id }}" 
+                            data-name="{{ perfume.name|escapejs }}" 
+                            data-price="{% if selected_volume %}{{ selected_volume.price }}{% elif perfume.volumes.first %}{{ perfume.volumes.first.price }}{% else %}0{% endif %}" 
+                            data-image="{{ perfume.image.url|escapejs }}"
+                            data-volume="{% if selected_volume %}{{ selected_volume.volume }}{% elif perfume.volumes.first %}{{ perfume.volumes.first.volume.size }}{% endif %}"
+                            data-volume-label="{% if selected_volume %}{{ selected_volume.get_volume_display }}{% elif perfume.volumes.first %}{{ perfume.volumes.first.volume.size }} мл{% endif %}"
+                            onclick="addToCartFromDetail(this)">
+                        <span class="cart-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="currentColor" d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                            </svg>
+                        </span>
+                        Добавить в корзину
+                    </button>
+                </div>
+            </div>
+            
+            {% if perfume.notes %}
+            <div class="product-notes">
+                <h3>Ноты аромата:</h3>
+                <p>{{ perfume.notes }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if related_perfumes %}
+    <div class="related-products">
+        <h2>Похожие ароматы</h2>
+        <div class="related-products-grid">
+            {% for related in related_perfumes %}
+            <div class="related-product-card">
+                <a href="{% url 'perfume_detail' related.id %}">
+                    <div class="related-product-image">
+                        {% if related.image %}
+                        <img src="{{ related.image.url }}" alt="{{ related.name }}">
+                        {% else %}
+                        <img src="{% static 'images/no-image.png' %}" alt="Нет изображения">
+                        {% endif %}
+                    </div>
+                    <div class="related-product-info">
+                        <h3>{{ related.name }}</h3>
+                        <div class="related-product-price">
+                            {% with first_volume=related.volumes.first %}
+                            {% if first_volume %}
+                            {{ first_volume.price }} тг.
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Объект для хранения данных о выбранном объеме
+    const selectedVolume = {
+        size: {% with first_volume=perfume.volumes.first %}{% if first_volume %}{{ first_volume.volume.size }}{% else %}0{% endif %}{% endwith %},
+        price: {% with first_volume=perfume.volumes.first %}{% if first_volume %}{{ first_volume.price }}{% else %}0{% endif %}{% endwith %}
+    };
+    
+    // Функция для изменения основного изображения
+    function changeMainImage(thumbnail, imageUrl) {
+        // Сначала удаляем активный класс со всех миниатюр
+        document.querySelectorAll('.thumbnail').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        
+        // Добавляем активный класс выбранной миниатюре
+        thumbnail.classList.add('active');
+        
+        // Меняем основное изображение
+        document.getElementById('main-product-image').src = imageUrl;
+    }
+    
+    // Обработчики выбора объема
+    document.querySelectorAll('.volume-option').forEach(option => {
+        option.addEventListener('click', function() {
+            // Удаляем активный класс со всех опций
+            document.querySelectorAll('.volume-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            
+            // Добавляем активный класс к выбранной опции
+            this.classList.add('active');
+            
+            // Обновляем выбранный объем и цену
+            selectedVolume.size = parseInt(this.dataset.volume);
+            selectedVolume.price = this.dataset.price;
+            
+            // Обновляем отображаемую цену
+            document.querySelector('#detail-price .price-value').textContent = selectedVolume.price;
+        });
+    });
+    
+    // Обработчик добавления в корзину
+    document.getElementById('add-to-cart-detail').addEventListener('click', function() {
+        // Получаем информацию о товаре
+        const productId = '{{ perfume.id }}';
+        const productName = '{{ perfume.name|escapejs }}';
+        const productImage = '{% if perfume.image %}{{ perfume.image.url }}{% else %}{% static "images/no-image.png" %}{% endif %}';
+        const volumeLabel = selectedVolume.size + ' мл';
+        
+        // Добавляем в корзину
+        addToCart(productId, productName, selectedVolume.price, productImage, selectedVolume.size, volumeLabel);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Контакты - Sultanbi Perfumes{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/contacts.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="contacts-page">
+    <div class="container">
+        <h1 class="page-title">Контакты</h1>
+        
+        <div class="contacts-grid">
+            <!-- Контактная информация -->
+            <div class="contact-info">
+                <div class="contact-card">
+                    <div class="contact-icon">📞</div>
+                    <h3>Телефон</h3>
+                    <p>+7 775 433 24 53</p>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-icon">💬</div>
+                    <h3>WhatsApp</h3>
+                    <p>+7 775 433 24 53</p>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-icon">📷</div>
+                    <h3>Instagram</h3>
+                    <p>@sultanbi.oud</p>
+                </div>
+
+                
+            </div>
+
+            <!-- Форма обратной связи -->
+          
+        </div>
+    </div>
+</div>
+{% endblock %} 

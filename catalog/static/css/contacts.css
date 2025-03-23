@@ -1,0 +1,250 @@
+:root {
+    --primary-color: #D4AF37;  /* Настоящий золотой цвет */
+    --secondary-color: #0a192f;
+    --accent-color: #C5A028;   /* Темный золотой */
+    --text-color: #fff;
+    --background-color: #0a192f;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    --gold-gradient: linear-gradient(135deg, #ffd700, #ffc107);
+    --dark-blue-gradient: linear-gradient(135deg, #0a192f, #172a45);
+    --heading-font: 'Playfair Display', serif;
+    --body-font: 'Montserrat', sans-serif;
+}
+
+/* Страница контактов */
+.contacts-page {
+    padding: 70px 0;
+    background: var(--background-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.contacts-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+    z-index: 0;
+}
+
+.page-title {
+    font-family: var(--heading-font);
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    letter-spacing: 1px;
+    z-index: 1;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: var(--gold-gradient);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.contacts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 60px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Контактная информация */
+.contact-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+}
+
+.contact-card {
+    background: linear-gradient(145deg, rgba(13, 28, 61, 0.95), rgba(20, 40, 80, 0.95));
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    backdrop-filter: blur(10px);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3);
+    border-color: var(--primary-color);
+}
+
+.contact-icon {
+    font-size: 36px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: inline-block;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.contact-card:hover .contact-icon {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+}
+
+.contact-card h3 {
+    font-family: var(--heading-font);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.contact-card p {
+    color: var(--text-color);
+    font-family: var(--body-font);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Форма обратной связи */
+.contact-form {
+    background: linear-gradient(145deg, rgba(13, 28, 61, 0.95), rgba(20, 40, 80, 0.95));
+    border-radius: 15px;
+    padding: 50px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.contact-form h2 {
+    font-family: var(--heading-font);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 40px;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
+    font-family: var(--body-font);
+    font-size: 16px;
+    color: var(--text-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 15px;
+    background: var(--gold-gradient);
+    color: var(--secondary-color);
+    border: none;
+    border-radius: 8px;
+    font-family: var(--body-font);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.submit-button:hover {
+    background: linear-gradient(135deg, #ffd700, #e0bb3a);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.5);
+}
+
+.submit-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .contacts-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .contact-info {
+        order: 2;
+    }
+    
+    .contact-form {
+        order: 1;
+    }
+}
+
+@media (max-width: 576px) {
+    .contact-info {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .contact-form {
+        padding: 30px;
+    }
+
+    .page-title {
+        font-size: 32px;
+    }
+
+    .contact-form h2 {
+        font-size: 22px;
+    }
+
+    .contact-card {
+        padding: 20px;
+    }
+
+    .contact-icon {
+        font-size: 30px;
+    }
+
+    .contact-card h3 {
+        font-size: 18px;
+    }
+
+    .contact-card p {
+        font-size: 14px;
+    }
+}   

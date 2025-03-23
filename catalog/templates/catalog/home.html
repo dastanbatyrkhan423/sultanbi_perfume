@@ -1,0 +1,72 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Sultanbi OUD - Парфюмерия{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">SULTANBI OUD</h1>
+        <p class="hero-subtitle">Откройте для себя мир изысканных ароматов</p>
+        <a href="/" class="hero-button">Перейти в каталог</a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-gem feature-icon"></i>
+                <h3 class="feature-title">Эксклюзивные коллекции</h3>
+                <p class="feature-description">Уникальные ароматы от лучших парфюмерных домов мира, тщательно отобранные для наших клиентов.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-award feature-icon"></i>
+                <h3 class="feature-title">Гарантия качества</h3>
+                <p class="feature-description">Только оригинальная продукция с сертификатами подлинности от официальных поставщиков.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-magic feature-icon"></i>
+                <h3 class="feature-title">Индивидуальный подход</h3>
+                <p class="feature-description">Профессиональная консультация и подбор аромата, учитывающий ваши предпочтения и стиль.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-section">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt contact-icon"></i>
+                <h3 class="contact-title">Наш адрес</h3>
+                <p class="contact-info">г. Атырау, Проспект Каныша Сатпаева, 15</p>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-clock contact-icon"></i>
+                <h3 class="contact-title">Время работы</h3>
+                <p class="contact-info">Ежедневно с 10:00 до 22:00</p>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-phone contact-icon"></i>
+                <h3 class="contact-title">Контакты</h3>
+                <p class="contact-info">
+                    <a href="tel:+7775 433 24 53" style="color: inherit; text-decoration: none;">+7 775 433 24 53</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="social-links">
+            <a href="https://www.instagram.com/sultanbi.oud" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/775 433 24 53" class="social-link"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- Необходимо добавить Font Awesome в base.html или здесь -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

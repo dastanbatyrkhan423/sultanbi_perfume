@@ -1,0 +1,429 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Каталог парфюмерии - Sultanbi Perfumes{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Каталог парфюмерии</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/product.css' %}">
+    <script src="{% static 'js/cart.js' %}" defer></script>
+</head>
+<body>
+    <div id="main-container">
+        <!-- Главное меню -->
+        <div class="container">
+            <!-- Добавьте это рядом с фильтрами -->
+            <div id="filter-toggle-btn">
+                <span class="filter-icon">
+                    <i class="fas fa-filter"></i>
+                </span>
+                <span class="filter-text">Фильтры</span>
+            </div>
+
+            <!-- Оберните ваши существующие фильтры в div с классом filters-section -->
+            <div id="filters-section" class="filters-section">
+                <div style="margin-top: 30px;" class="filters-wrapper">
+                    <!-- Поиск -->
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="🔍 Поиск парфюма..." autofocus>
+                    </div>
+
+                    <!-- Фильтры -->
+                    <div class="filters-container">
+                        <div class="filter-group">
+                            <label>Бренд</label>
+                            <select id="brandFilter" class="filter-select">
+                                <option value="">Все бренды</option>
+                                {% for brand in brands %}
+                                    <option value="{{ brand|lower }}">{{ brand }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Категория</label>
+                            <select id="categoryFilter" class="filter-select">
+                                <option value="">Все категории</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Для кого</label>
+                            <select id="genderFilter" class="filter-select">
+                                <option value="">Все ароматы</option>
+                                {% for gender_code, gender_name in Gender.GENDER_CHOICES %}
+                                    <option value="{{ gender_code }}">{{ gender_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="filter-group price-range">
+                            <label>Цена</label>
+                            <div class="price-inputs">
+                                <input type="number" id="minPrice" placeholder="От" min="0">
+                                <span>-</span>
+                                <input type="number" id="maxPrice" placeholder="До" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Сортировка -->
+                    <div style="margin-top: 10px;" class="sort-box"> 
+                        <label style="color: #d4af37;
+                        font-size: 14px;font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                         ">Сортировка</label>
+                        <select style="margin-top: 10px;" id="sortSelect" class="filter-select">
+                            <option value="default">По умолчанию</option>
+                            <option value="price-asc">Цена: по возрастанию</option>
+                            <option value="price-desc">Цена: по убыванию</option>
+                            <option value="name-asc">По названию: А-Я</option>
+                            <option value="name-desc">По названию: Я-А</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Активные фильтры -->
+                <div class="active-filters" id="activeFilters"></div>
+            </div>
+
+            <!-- Сетка товаров -->
+            <div class="products-grid">
+                {% for perfume in perfumes %}
+                <div class="product-card" 
+                    data-brand="{{ perfume.brand|lower }}" 
+                    data-category="{{ perfume.category.id }}" 
+                    data-gender="{{ perfume.gender.name }}"
+                    data-price="{% with first_volume=perfume.volumes.first %}{{ first_volume.price }}{% endwith %}"
+                    data-name="{{ perfume.name|lower }}">
+                    <div class="product-image">
+                        <a href="{% url 'perfume_detail' perfume.id %}">
+                            {% if perfume.image %}
+                                <img src="{{ perfume.image.url }}" alt="{{ perfume.name }}">
+                            {% else %}
+                                <img src="{% static 'images/placeholder.jpg' %}" alt="Нет изображения">
+                            {% endif %}
+                        </a>
+                    </div>
+                    
+                    <div class="product-info">
+                        <h3 class="product-title">
+                            <a class="perfume-link" href="{% url 'perfume_detail' perfume.id %}">{{ perfume.name }}</a>
+                        </h3> 
+                        {% if perfume.article %}
+                            <div class="product-article">Артикул: {{ perfume.article }}</div>
+                        {% endif %}
+                        
+                        {% if perfume.description %}
+                            <div class="product-description">{{ perfume.description|truncatechars:100 }}</div>
+                        {% endif %}
+                        
+                        <div class="product-sizes">
+                            <div class="volume-control" data-product-id="{{ perfume.id }}">
+                                <div class="volume-buttons">
+                                    {% with in_stock_volumes=perfume.volumes.all %}
+                                    {% if in_stock_volumes %}
+                                        <button class="volume-btn minus-btn" onclick="decreaseVolume(this, '{{ perfume.id }}')">-</button>
+                                        <span class="current-volume" data-index="0">
+                                            {% for v in in_stock_volumes %}
+                                                {% if forloop.first %}
+                                                    {{ v.volume.size }} мл
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <button class="volume-btn plus-btn" onclick="increaseVolume(this, '{{ perfume.id }}')">+</button>
+                                    {% else %}
+                                        <span class="out-of-stock">Нет в наличии</span>
+                                    {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-price" id="price-{{ perfume.id }}">
+                            {% with first_volume=perfume.volumes.first %}
+                                {% if first_volume and first_volume.in_stock %}
+                                    <span class="price-value">{{ first_volume.price }}</span> тг.
+                                {% else %}
+                                    Нет в наличии
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="details-button" onclick="window.location.href='{% url 'perfume_detail' perfume.id %}'">
+                                Подробнее
+                            </button>
+                            {% if perfume.volumes.first and perfume.volumes.first.in_stock %}
+                            <button class="buy-button" onclick="addToCart('{{ perfume.id }}', '{{ perfume.name|escapejs }}', getCurrentPrice('{{ perfume.id }}'), '{% if perfume.image %}{{ perfume.image.url }}{% else %}{% static 'images/no-image.png' %}{% endif %}', getCurrentVolume('{{ perfume.id }}'))">
+                                Купить
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Объект, содержащий доступные объемы для каждого парфюма
+    const productVolumes = {
+        {% for perfume in perfumes %}
+        "{{ perfume.id }}": [
+            {% for volume in perfume.volumes.all %}
+                {% if volume.in_stock %}
+                {
+                    "size": {{ volume.volume.size }},
+                    "label": "{{ volume.volume.size }} мл",
+                    "price": {{ volume.price }}
+                }{% if not forloop.last %},{% endif %}
+                {% endif %}
+            {% endfor %}
+        ]{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    };
+
+    // Функции для работы с объемами
+    function decreaseVolume(btn, productId) {
+        const volumeSpan = btn.nextElementSibling;
+        const currentIndex = parseInt(volumeSpan.dataset.index);
+        const volumes = productVolumes[productId];
+        
+        if (currentIndex > 0) {
+            const newIndex = currentIndex - 1;
+            volumeSpan.dataset.index = newIndex;
+            volumeSpan.textContent = volumes[newIndex].label;
+            updatePrice(productId, volumes[newIndex].price);
+        }
+    }
+    
+    function increaseVolume(btn, productId) {
+        const volumeSpan = btn.previousElementSibling;
+        const currentIndex = parseInt(volumeSpan.dataset.index);
+        const volumes = productVolumes[productId];
+        
+        if (currentIndex < volumes.length - 1) {
+            const newIndex = currentIndex + 1;
+            volumeSpan.dataset.index = newIndex;
+            volumeSpan.textContent = volumes[newIndex].label;
+            updatePrice(productId, volumes[newIndex].price);
+        }
+    }
+    
+    function updatePrice(productId, price) {
+        const priceElement = document.getElementById(`price-${productId}`);
+        if (priceElement) {
+            priceElement.querySelector('.price-value').textContent = price;
+        }
+    }
+
+    function getCurrentPrice(productId) {
+        const priceElement = document.getElementById(`price-${productId}`);
+        return priceElement.querySelector('.price-value').textContent;
+    }
+
+    function getCurrentVolume(productId) {
+        const volumeSpan = document.querySelector(`.volume-control[data-product-id="${productId}"] .current-volume`);
+        const volumes = productVolumes[productId];
+        const index = parseInt(volumeSpan.dataset.index);
+        return volumes[index].size;
+    }
+
+    function getCurrentVolumeLabel(productId) {
+        const volumeSpan = document.querySelector(`.volume-control[data-product-id="${productId}"] .current-volume`);
+        return volumeSpan.textContent;
+    }
+    </script>
+
+    <script>
+        // Функция для переключения отображения выпадающего меню
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdown.classList.toggle('show');
+        }
+        
+        // Закрыть выпадающее меню при клике вне его
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-toggle') && !event.target.matches('.menu-toggle-icon')) {
+                const dropdown = document.getElementById('dropdownMenu');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        }
+        
+        // Функция для плавной прокрутки к разделу
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Закрываем выпадающее меню после клика
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdown.classList.remove('show');
+            
+            // Предотвращаем стандартное поведение ссылки
+            return false;
+        }
+    </script>
+
+    <script>
+    // Добавим улучшенную функцию для отображения активных фильтров
+    function updateActiveFilters() {
+        const activeFilters = document.getElementById('activeFilters');
+        activeFilters.innerHTML = '';
+        
+        // Бренд
+        const brandFilter = document.getElementById('brandFilter');
+        if (brandFilter.value) {
+            const filterTag = document.createElement('div');
+            filterTag.className = 'filter-tag';
+            filterTag.innerHTML = `
+                <span class="filter-name">Бренд:</span>
+                <span class="filter-value">${brandFilter.options[brandFilter.selectedIndex].text}</span>
+                <span class="remove-filter" onclick="clearFilter('brandFilter')">×</span>
+            `;
+            activeFilters.appendChild(filterTag);
+        }
+        
+        // Категория
+        const categoryFilter = document.getElementById('categoryFilter');
+        if (categoryFilter.value) {
+            const filterTag = document.createElement('div');
+            filterTag.className = 'filter-tag';
+            filterTag.innerHTML = `
+                <span class="filter-name">Категория:</span>
+                <span class="filter-value">${categoryFilter.options[categoryFilter.selectedIndex].text}</span>
+                <span class="remove-filter" onclick="clearFilter('categoryFilter')">×</span>
+            `;
+            activeFilters.appendChild(filterTag);
+        }
+        
+        // Пол
+        const genderFilter = document.getElementById('genderFilter');
+        if (genderFilter.value) {
+            const filterTag = document.createElement('div');
+            filterTag.className = 'filter-tag';
+            filterTag.innerHTML = `
+                <span class="filter-name">Для:</span>
+                <span class="filter-value">${genderFilter.options[genderFilter.selectedIndex].text}</span>
+                <span class="remove-filter" onclick="clearFilter('genderFilter')">×</span>
+            `;
+            activeFilters.appendChild(filterTag);
+        }
+        
+        // Цена
+        const minPrice = document.getElementById('minPrice').value;
+        const maxPrice = document.getElementById('maxPrice').value;
+        if (minPrice || maxPrice) {
+            const filterTag = document.createElement('div');
+            filterTag.className = 'filter-tag';
+            let priceText = '';
+            if (minPrice && maxPrice) {
+                priceText = `${minPrice} - ${maxPrice} тг.`;
+            } else if (minPrice) {
+                priceText = `от ${minPrice} тг.`;
+            } else if (maxPrice) {
+                priceText = `до ${maxPrice} тг.`;
+            }
+            filterTag.innerHTML = `
+                <span class="filter-name">Цена:</span>
+                <span class="filter-value">${priceText}</span>
+                <span class="remove-filter" onclick="clearPriceFilter()">×</span>
+            `;
+            activeFilters.appendChild(filterTag);
+        }
+    }
+
+    // Функция для очистки фильтра
+    function clearFilter(filterId) {
+        document.getElementById(filterId).value = '';
+        applyFilters();
+    }
+
+    // Функция для очистки фильтра цены
+    function clearPriceFilter() {
+        document.getElementById('minPrice').value = '';
+        document.getElementById('maxPrice').value = '';
+        applyFilters();
+    }
+    </script>
+</body>
+
+<!-- Футер сайта -->
+<footer class="site-footer">
+    <div class="footer-content">
+        
+        
+        <div class="footer-column" id="footer-contacts">
+            <h3 class="footer-title">Контакты</h3>
+            <div class="footer-contact-item">
+                <svg class="footer-contact-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19.44,13c-.22,0-.45-.07-.67-.12a9.44,9.44,0,0,1-1.31-.39,2,2,0,0,0-2.48,1l-.22.45a12.18,12.18,0,0,1-2.66-2,12.18,12.18,0,0,1-2-2.66L10.52,9a2,2,0,0,0,1-2.48,10.33,10.33,0,0,1-.39-1.31c-.05-.22-.09-.45-.12-.68a3,3,0,0,0-3-2.49h-3a3,3,0,0,0-3,3.41A19,19,0,0,0,18.53,21.91l.38,0a3,3,0,0,0,2-.76,3,3,0,0,0,1-2.25v-3A3,3,0,0,0,19.44,13Zm.5,6a1,1,0,0,1-.34.75,1.05,1.05,0,0,1-.82.25A17,17,0,0,1,4.07,5.22a1.09,1.09,0,0,1,.25-.82,1,1,0,0,1,.75-.34h3A1,1,0,0,1,9,5.2l.42,0a6.66,6.66,0,0,0,.24.74,7.7,7.7,0,0,0,.3,1l-1.17.4a1,1,0,0,0-.62,1.26,13.49,13.49,0,0,0,2.5,4.15,13.57,13.57,0,0,0,4.15,2.5,1,1,0,0,0,1.26-.62l.4-1.17a7.7,7.7,0,0,0,1,.3,6.66,6.66,0,0,0,.74.24l0,.42a1,1,0,0,1,.14.89Zm0,0"></path>
+                </svg>
+                <span>+7 775 433 2453</span>
+            </div>
+            <div class="footer-contact-item">
+                <svg class="footer-contact-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19,4H5A3,3,0,0,0,2,7V17a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V7A3,3,0,0,0,19,4Zm-.41,2-5.88,5.88a1,1,0,0,1-1.42,0L5.41,6ZM20,17a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V7.41l5.88,5.88a3,3,0,0,0,4.24,0L20,7.41Z"></path>
+                </svg>
+                <span>sultanbi.oud@gmail.com</span>
+            </div>
+            
+            <h3 class="footer-title" style="margin-top: 20px;">Мы в социальных сетях</h3>
+            <div class="social-links">
+                <a href="https://www.instagram.com/sultanbi.oud/" class="social-link" target="_blank">
+                    <img src="{% static 'images/instagram.png' %}" alt="Instagram">
+                </a>
+                <a href="https://wa.me/87754332453" class="social-link" target="_blank">
+                    <img src="{% static 'images/whastapp.png' %}" alt="WhatsApp">
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer-column" id="footer-location">
+            <h3 class="footer-title">Как добраться</h3>
+            <div class="how-to-get">
+                <div class="address-detail">
+                    <div class="address-icon">📍</div>
+                    <div class="address-text">
+                        <div class="address-title">Наш адрес</div>
+                        <div class="address-info">г. Атырау, ул. Сатпаева, 15, ТЦ "Султан"</div>
+                    </div>
+                </div>
+                <div class="address-detail">
+                    <div class="address-icon">🕒</div>
+                    <div class="address-text">
+                        <div class="address-title">Режим работы</div>
+                        <div class="address-info">Пн-Вс: 10:00 - 20:00</div>
+                    </div>
+                </div>
+                <div class="address-detail">
+                    <div class="address-icon">🚗</div>
+                 
+    
+    <div class="footer-bottom">
+        <p>© 2025 Sultanbi Oud. Все права защищены.</p>
+    </div>
+</footer>
+
+</html>
+{% endblock %}

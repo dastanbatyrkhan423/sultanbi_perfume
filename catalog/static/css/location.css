@@ -1,0 +1,421 @@
+:root {
+    --primary-color: #D4AF37;  /* Настоящий золотой цвет */
+    --secondary-color: #0a192f;
+    --accent-color: #C5A028;   /* Темный золотой */
+    --text-color: #fff;
+    --background-color: #0a192f;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    --gold-gradient: linear-gradient(135deg, #ffd700, #ffc107);
+    --dark-blue-gradient: linear-gradient(135deg, #0a192f, #172a45);
+    --heading-font: 'Playfair Display', serif;
+    --body-font: 'Montserrat', sans-serif;
+}
+
+/* Страница расположения */
+.location-page {
+    padding: 70px 0;
+    background: var(--background-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.location-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+    z-index: 0;
+}
+
+.page-title {
+    font-family: var(--heading-font);
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    letter-spacing: 1px;
+    z-index: 1;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: var(--gold-gradient);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.location-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 60px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Информация о местоположении */
+.address-info {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.location-card {
+    background: linear-gradient(145deg, rgba(13, 28, 61, 0.95), rgba(20, 40, 80, 0.95));
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    backdrop-filter: blur(10px);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.location-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3);
+    border-color: var(--primary-color);
+}
+
+.location-icon {
+    font-size: 36px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: inline-block;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.location-card:hover .location-icon {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+}
+
+.location-card h3 {
+    font-family: var(--heading-font);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.location-card p {
+    color: var(--text-color);
+    font-family: var(--body-font);
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.directions-button {
+    display: inline-block;
+    background: var(--gold-gradient);
+    color: var(--secondary-color);
+    text-decoration: none;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+    text-align: center;
+}
+
+.directions-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(212, 175, 55, 0.5);
+}
+
+.directions-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 8px rgba(212, 175, 55, 0.3);
+}
+
+/* Карта */
+.map-container {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .location-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .map-container {
+        order: -1;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-title {
+        font-size: 32px;
+    }
+
+    .location-card {
+        padding: 20px;
+    }
+
+    .location-icon {
+        font-size: 30px;
+    }
+
+    .location-card h3 {
+        font-size: 18px;
+    }
+
+    .location-card p {
+        font-size: 14px;
+    }
+    
+    .directions-button {
+        width: 100%;
+        padding: 12px 15px;
+    }
+}
+
+/* Страница "Как добраться" */
+.location-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  position: relative;
+  padding: 50px 0;
+  color: var(--text-color);
+  min-height: 100vh;
+  z-index: 1;
+}
+
+.location-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.location-header h1 {
+  font-family: var(--heading-font);
+  font-size: 36px;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.location-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 300px;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--secondary-color);
+}
+
+.divider-icon {
+  margin: 0 15px;
+  font-size: 20px;
+  color: var(--secondary-color);
+}
+
+/* Информация о локации */
+.location-info {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.info-card {
+  display: flex;
+  background: linear-gradient(145deg, rgba(13, 28, 61, 0.95), rgba(20, 40, 80, 0.95));
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-color);
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3);
+}
+
+.info-icon {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  margin-right: 20px;
+  color: var(--secondary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+.info-content {
+  flex: 1;
+}
+
+.info-content h2 {
+  font-family: var(--heading-font);
+  font-size: 22px;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.info-content p {
+  color: #ffffff;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.info-content a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.info-content a:hover {
+  color: #ffc107;
+  text-decoration: underline;
+}
+
+.schedule {
+  margin-top: 10px;
+}
+
+.schedule-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.day {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.time {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.button-icon {
+  margin-left: 10px;
+}
+
+/* Стили для мобильных устройств */
+@media (max-width: 768px) {
+  .location-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .location-map {
+    order: -1;
+    margin-bottom: 20px;
+  }
+  
+  .info-card {
+    padding: 20px;
+  }
+  
+  .schedule-item {
+    flex-direction: column;
+  }
+  
+  .time {
+    margin-top: 5px;
+  }
+}
+
+/* Стили для выпадающего меню на странице локации */
+.menu-section {
+  margin-top: 20px;
+}
+
+.section-content h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: var(--primary-color);
+}
+
+.contacts-info p,
+.directions-info p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Стиль для транспортной информации */
+.transport-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.transport-icon {
+  margin-right: 15px;
+  font-size: 18px;
+}
+
+/* Фоновое изображение с затемнением */
+.location-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../images/location-bg.jpg'); /* Путь к вашему изображению */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  filter: brightness(0.2); /* Затемнение изображения */
+  z-index: -1;
+  transform: scale(1.1); /* Немного увеличиваем изображение, чтобы скрыть края при параллаксе */
+  transition: transform 0.5s ease-out;
+}
+
+/* Дополнительный эффект при загрузке страницы */
+.location-container.loaded::before {
+  transform: scale(1.05);
+}
+
+/* Добавляем градиентный слой поверх изображения */
+.location-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(10, 25, 47, 0.9) 0%, rgba(10, 25, 47, 0.7) 100%);
+  z-index: -1;
+}

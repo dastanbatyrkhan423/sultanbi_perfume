@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}SULTANBI OUD{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cart-page.css' %}">
+    {% block css %}{% endblock %}
+    <script src="{% static 'js/cart.js' %}" defer></script>
+    <script src="{% static 'js/script.js' %}" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div id="main-container">
+        <!-- Главное меню -->
+        <header class="main-header">
+            <div class="container">
+                <nav class="main-nav">
+                    <div class="logo">
+                        <a href="{% url 'catalog' %}" class="logo-link">
+                            <img src="{% static 'images/per.png' %}" alt="SULTANBI OUD" class="logo-image">
+                            <span class="logo-text">SULTANBI<br>OUD</span>
+                        </a>
+                    </div>
+                    <div class="nav-links-wrapper">
+                        <button class="menu-toggle" aria-label="Открыть меню" onclick="toggleDropdown()">
+                            <span class="menu-toggle-icon">&#8942;</span>
+                        </button>
+                        <div class="nav-links">
+                            <a href="{% url 'catalog' %}" class="{% if request.path == '/' %}active{% endif %}">Каталог</a>
+                            <a href="{% url 'about' %}" class="{% if request.path == '/about/' %}active{% endif %}">О нас</a>
+                        </div>
+                        
+                        <!-- Выпадающее меню при клике на три точки -->
+                        <div class="menu-overlay" id="menuOverlay"></div>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <button class="menu-close" onclick="toggleDropdown()">×</button>
+                            <div class="menu-section main-menu">
+                                <a href="{% url 'catalog' %}" class="dropdown-item">Каталог</a>
+                                <a href="{% url 'about' %}" class="dropdown-item">О нас</a>
+                                <a href="{% url 'contacts' %}" class="dropdown-item">Контакты</a>
+                                <a href="{% url 'location' %}" class="dropdown-item">Как добраться</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        {% block content %}
+        {% endblock %}
+
+        <!-- Корзина - показываем только на страницах каталога и детальной страницы товара -->
+        {% if request.path == '/' or request.path == '/catalog/' or '/perfume/' in request.path %}
+        <div class="cart-button">
+            <div class="cart-icon">
+                <img src="{% static 'images/cart-icon.png' %}" alt="Корзина" class="cart-icon-image">
+                <span class="cart-count" id="cart-count">0</span>
+            </div>
+        </div>
+        {% endif %}
+        
+    </div>
+
+    <!-- Футер -->
+
+        
+        <div class="footer-bottom">
+            <p>© 2025 Sultanbi Oud. Все права защищены.</p>
+        </div>
+    </footer>
+</body>
+</html> 

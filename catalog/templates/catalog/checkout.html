@@ -1,0 +1,183 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <div class="checkout-header">
+        <h1>Оформление заказа</h1>
+        <div class="checkout-steps">
+            <div class="step active">
+                <span class="step-number">1</span>
+                <span class="step-text">Корзина</span>
+            </div>
+            <span class="step-connector"></span>
+            <div class="step active">
+                <span class="step-number">2</span>
+                <span class="step-text">Оформление</span>
+            </div>
+            <span class="step-connector"></span>
+            <div class="step">
+                <span class="step-number">3</span>
+                <span class="step-text">Готово</span>
+            </div>
+        </div>
+    </div>
+
+    
+
+        <div class="order-summary">
+            <div class="summary-header">
+                <h2>Ваш заказ</h2>
+                <a href="/" class="edit-order">Изменить</a>
+            </div>
+            
+            <div class="summary-items">
+                <!-- Здесь будут отображаться товары из корзины -->
+            </div>
+            
+            <div class="summary-totals">
+                <div class="summary-row">
+                    <span>Товары</span>
+                    <span id="subtotal">0 тг.</span>
+                </div>
+                <div class="summary-row">
+                    <span>Доставка</span>
+                    <span id="delivery-cost">0 тг.</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Итого</span>
+                    <span id="total">0 тг.</span>
+                </div>
+            </div>
+            
+            <a id="whatsapp-order-button" style="margin-left: -15px;" href="#" class="place-order-button">
+                Подтвердить заказ
+            </a>
+            
+            <div class="order-note">
+                <p>Нажимая кнопку "Подтвердить заказ", вы соглашаетесь с <a href="#">условиями обработки персональных данных</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Загружаем корзину из localStorage
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const summaryItems = document.querySelector('.summary-items');
+        const subtotalEl = document.getElementById('subtotal');
+        const deliveryCostEl = document.getElementById('delivery-cost');
+        const totalEl = document.getElementById('total');
+        
+        // Переменные для расчета
+        let subtotal = 0;
+        let deliveryCost = 0;
+        
+        // Отображаем товары в сводке заказа
+        cart.forEach(item => {
+            const itemTotal = item.price * (item.quantity || 1);
+            subtotal += parseFloat(itemTotal);
+            
+            const itemElement = document.createElement('div');
+            itemElement.className = 'summary-item';
+            itemElement.innerHTML = `
+                <div class="item-image">
+                    <img src="${item.image}" alt="${item.name}">
+                </div>
+                <div class="item-details">
+                    <h3>${item.name}</h3>
+                    <p>${item.volumeLabel || (item.volume + ' мл')}</p>
+                    <div class="item-quantity-price">
+                        <span>${item.quantity || 1} × ${item.price} тг.</span>
+                    </div>
+                </div>
+                <div class="item-total">
+                    ${itemTotal} тг.
+                </div>
+            `;
+            
+            summaryItems.appendChild(itemElement);
+        });
+        
+        // Обновляем отображение сумм
+        subtotalEl.textContent = subtotal.toFixed(0) + ' тг.';
+        updateTotal();
+        
+        // Обработчики событий для выбора доставки
+        const deliveryOptions = document.querySelectorAll('input[name="delivery"]');
+        const addressForm = document.getElementById('address-form');
+        
+        deliveryOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                if (this.value === 'courier') {
+                    addressForm.style.display = 'block';
+                    deliveryCost = 1500;
+                } else {
+                    addressForm.style.display = 'none';
+                    deliveryCost = 0;
+                }
+                deliveryCostEl.textContent = deliveryCost + ' тг.';
+                updateTotal();
+            });
+        });
+        
+        // Функция обновления итоговой суммы
+        function updateTotal() {
+            const total = subtotal + deliveryCost;
+            totalEl.textContent = total.toFixed(0) + ' тг.';
+            return total;
+        }
+        
+        // Функция для генерации текста заказа для WhatsApp
+        function generateOrderMessage() {
+            let message = "🛒 *Новый заказ из магазина Sultanbi Perfumes* 🛒\n\n";
+            message += "*Товары:*\n";
+            
+            cart.forEach((item, index) => {
+                const quantity = item.quantity || 1;
+                const itemTotal = item.price * quantity;
+                message += `${index + 1}. ${item.name} (${item.volumeLabel || item.volume + ' мл'}) - ${quantity} шт × ${item.price} тг = ${itemTotal} тг\n`;
+            });
+            
+            const totalAmount = updateTotal();
+            
+            message += "\n*Общая сумма:* " + totalAmount + " тг";
+            message += "\n\nПожалуйста, подтвердите мой заказ. Спасибо!";
+            
+            return encodeURIComponent(message);
+        }
+        
+        // Обработчик клика на кнопке заказа через WhatsApp
+        document.getElementById('whatsapp-order-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (cart.length === 0) {
+                alert('Ваша корзина пуста. Добавьте товары перед оформлением заказа.');
+                return;
+            }
+            
+            const orderMessage = generateOrderMessage();
+            const whatsappLink = `https://wa.me/77750717135?text=${orderMessage}`;
+            
+            // Открываем WhatsApp с подготовленным сообщением
+            window.open(whatsappLink, '_blank');
+            
+            // Очищаем корзину после отправки заказа
+            localStorage.removeItem('cart');
+            
+            // Уведомляем пользователя
+            setTimeout(() => {
+                alert('Спасибо за заказ! Теперь вы можете отправить сообщение через WhatsApp.');
+                window.location.href = '/';
+            }, 1000);
+        });
+    });
+</script>
+{% endblock %}
