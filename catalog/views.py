@@ -10,11 +10,13 @@ def about(request):
 
 def catalog(request):
     perfumes = Perfume.objects.all().prefetch_related('volumes').select_related('category', 'gender')
+    hit_perfumes = perfumes.filter(is_hit=True)
     brands = Perfume.objects.values_list('brand', flat=True).distinct()
     categories = Category.objects.all()
     
     context = {
         'perfumes': perfumes,
+        'hit_perfumes': hit_perfumes, 
         'brands': brands,
         'categories': categories,
         'Gender': Gender

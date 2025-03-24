@@ -112,13 +112,16 @@
                     data-price="{% with first_volume=perfume.volumes.first %}{{ first_volume.price }}{% endwith %}"
                     data-name="{{ perfume.name|lower }}">
                     <div class="product-image">
-                        <a href="{% url 'perfume_detail' perfume.id %}">
-                            {% if perfume.image %}
-                                <img src="{{ perfume.image.url }}" alt="{{ perfume.name }}">
-                            {% else %}
-                                <img src="{% static 'images/placeholder.jpg' %}" alt="Нет изображения">
+                        <div class="image-container">
+                            {% if perfume.is_hit %}
+                                <img src="{% static 'images/hit1.png' %}" class="hit-label" alt="Хит продаж">
                             {% endif %}
-                        </a>
+                            {% if perfume.image %}
+                                <img src="{{ perfume.image.url }}" alt="{{ perfume.name }}" class="perfume-img">
+                            {% else %}
+                                <img src="{% static 'images/placeholder.jpg' %}" alt="Нет изображения" class="perfume-img">
+                            {% endif %}
+                        </div>
                     </div>
                     
                     <div class="product-info">

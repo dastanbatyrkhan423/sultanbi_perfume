@@ -30,13 +30,14 @@ class PerfumeVolumeInline(admin.TabularInline):
 
 @admin.register(Perfume)
 class PerfumeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'brand', 'category', 'gender')
-    list_filter = ('brand', 'category', 'gender')
+    list_display = ('name', 'brand', 'category', 'gender', 'is_hit')
+    list_filter = ('brand', 'category', 'gender', 'is_hit')
+    list_editable = ['is_hit']
     search_fields = ('name', 'brand', 'description')
     inlines = [PerfumeVolumeInline]
     fieldsets = (
         (None, {
-            'fields': ('name', 'brand', 'article', 'category', 'gender', 'image')
+            'fields': ('name', 'brand', 'article', 'category', 'gender', 'image', 'is_hit')
         }),
         ('Описание', {
             'fields': ('description', 'notes'),

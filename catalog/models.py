@@ -56,6 +56,7 @@ class Perfume(models.Model):
     image = models.ImageField(upload_to='perfumes/', blank=True, null=True, verbose_name="Изображение")
     notes = models.TextField(blank=True, null=True, verbose_name='Ноты аромата')
     article = models.CharField(max_length=50, blank=True, null=True, verbose_name="Артикул")
+    is_hit = models.BooleanField(default=False, verbose_name="Хит продаж")
 
     def __str__(self):
         return f"{self.brand} - {self.name}"
