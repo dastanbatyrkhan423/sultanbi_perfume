@@ -459,11 +459,11 @@ body {
 
 .hit-label {
     position: absolute;
-    margin-top: -10px;
-    margin-left: 140px;
+    margin-top: -15px;
+    margin-left: 80px;
     top: 15px; /* Увеличиваем отступ сверху для баланса */
     left: 15px; /* Увеличиваем отступ слева для баланса */
-    width: 150px; /* Увеличиваем размер метки с 40px до 50px */
+    width: 100px; /* Увеличиваем размер метки с 40px до 50px */
     height: auto;
     z-index: 1;
 }
