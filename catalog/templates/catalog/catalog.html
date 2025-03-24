@@ -23,6 +23,16 @@
     <div id="main-container">
         <!-- Главное меню -->
         <div class="container">
+            <!-- Добавьте этот блок перед фильтрами -->
+            <div class="ramadan-sale">
+                <div class="ramadan-text-kz">
+                    Қасиетті Рамазан айына орай — 50% жеңілдік! Ай соңына дейін осы ұсынысты пайдаланып үлгеріңіз!
+                </div>
+                <div class="ramadan-text-ru">
+                    В честь священного месяца Рамадан — 50% скидка! Успейте воспользоваться предложением до конца месяца!
+                </div>
+            </div>
+
             <!-- Добавьте это рядом с фильтрами -->
             <div id="filter-toggle-btn">
                 <span class="filter-icon">
@@ -117,7 +127,9 @@
                                 <img src="{% static 'images/hit1.png' %}" class="hit-label" alt="Хит продаж">
                             {% endif %}
                             {% if perfume.image %}
+                            <a href="{% url 'perfume_detail' perfume.id %}">
                                 <img src="{{ perfume.image.url }}" alt="{{ perfume.name }}" class="perfume-img">
+                            </a>
                             {% else %}
                                 <img src="{% static 'images/placeholder.jpg' %}" alt="Нет изображения" class="perfume-img">
                             {% endif %}
@@ -397,7 +409,7 @@
                     <img src="{% static 'images/instagram.png' %}" alt="Instagram">
                 </a>
                 <a href="https://wa.me/87754332453" class="social-link" target="_blank">
-                    <img src="{% static 'images/whastapp.png' %}" alt="WhatsApp">
+                    <img src="{% static 'images/whatsapp.png' %}" alt="WhatsApp">
                 </a>
             </div>
         </div>

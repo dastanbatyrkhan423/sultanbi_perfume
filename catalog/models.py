@@ -80,7 +80,7 @@ class Perfume(models.Model):
 class PerfumeVolume(models.Model):
     perfume = models.ForeignKey(Perfume, on_delete=models.CASCADE, related_name='volumes', verbose_name="Парфюм")
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE, verbose_name="Объем")
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
+    price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name="Цена")
     in_stock = models.BooleanField(default=True, verbose_name="В наличии")
 
     def __str__(self):

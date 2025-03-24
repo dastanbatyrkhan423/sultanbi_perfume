@@ -1269,3 +1269,53 @@ body {
         padding: 4px 8px;
     }
 }
+
+.ramadan-sale {
+    background: linear-gradient(135deg, #1e4d5c 0%, #0a192f 100%);
+    color: #fff;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ramadan-text-kz {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #d4af37; /* золотой цвет */
+    font-weight: 600;
+    line-height: 1.4;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.ramadan-text-ru {
+    font-size: 18px;
+    color: #fff;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+/* Анимация при наведении */
+.ramadan-sale:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .ramadan-text-kz {
+        font-size: 20px;
+    }
+    
+    .ramadan-text-ru {
+        font-size: 16px;
+    }
+    
+    .ramadan-sale {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+}
