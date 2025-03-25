@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-&rfp0an)ohfg0x3jzg=qbm()6xz(h^g-esfv5=k0p0j-710xju')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'  # По умолчанию False в продакшене
+DEBUG = True  # Для локальной разработки установите True
 
 # Добавьте домены Vercel и ваш домен
 ALLOWED_HOSTS = ['*']
@@ -150,13 +150,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Для локальной разработки и для Railway
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8000', 
-    'http://127.0.0.1:8000',
-    'https://*.up.railway.app',  # Для доменов Railway
-]
+# Для локальной разработки
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
 # Настройки сессий
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False') == 'True'  # Secure в продакшене
+SESSION_COOKIE_SECURE = False  # Для локальной разработки установите False
