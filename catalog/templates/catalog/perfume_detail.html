@@ -80,6 +80,12 @@
             <div class="product-description">
                 {{ perfume.description|linebreaks }}
             </div>
+            {% if perfume.notes %}
+            <div class="product-notes">
+                <h3>Ноты аромата:</h3>
+                <p>{{ perfume.notes|linebreaks }}</p>
+            </div>
+            {% endif %}
             
             <div class="product-purchase">
                 <div class="volume-selection">
@@ -127,12 +133,7 @@
                 </div>
             </div>
             
-            {% if perfume.notes %}
-            <div class="product-notes">
-                <h3>Ноты аромата:</h3>
-                <p>{{ perfume.notes }}</p>
-            </div>
-            {% endif %}
+            
         </div>
     </div>
     
